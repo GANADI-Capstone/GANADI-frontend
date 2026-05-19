@@ -44,6 +44,7 @@ import {
   getAdminVetDetail,
   getAdminReports,
   suspendAdminUser,
+  unsuspendAdminUser,
   deleteAdminUser,
   approveAdminVet,
   rejectAdminVet,
@@ -271,6 +272,23 @@ export function AdminDashboard() {
           ? (e as { response?: { data?: { detail?: string } } }).response?.data?.detail
           : "정지 처리에 실패했습니다.";
       window.alert(typeof msg === "string" ? msg : "정지 처리에 실패했습니다.");
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const handleUnsuspendUser = async (userId: number, uiLockId?: number) => {
+    if (!window.confirm("이 보호자 계정의 정지를 해제할까요?")) return;
+    setActionId(uiLockId ?? userId);
+    try {
+      await unsuspendAdminUser(userId);
+      await refreshAfterMutation();
+    } catch (e: unknown) {
+      const msg =
+        typeof e === "object" && e !== null && "response" in e
+          ? (e as { response?: { data?: { detail?: string } } }).response?.data?.detail
+          : "정지 해제에 실패했습니다.";
+      window.alert(typeof msg === "string" ? msg : "정지 해제에 실패했습니다.");
     } finally {
       setActionId(null);
     }
@@ -907,14 +925,25 @@ export function AdminDashboard() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2">
-                            <button
-                              type="button"
-                              className="text-xs font-medium text-amber-700 hover:text-amber-800 disabled:opacity-50"
-                              disabled={u.is_suspended || actionId === u.id}
-                              onClick={() => handleSuspendUser(u.id)}
-                            >
-                              정지
-                            </button>
+                            {u.is_suspended ? (
+                              <button
+                                type="button"
+                                className="text-xs font-medium text-green-700 hover:text-green-800 disabled:opacity-50"
+                                disabled={actionId === u.id}
+                                onClick={() => handleUnsuspendUser(u.id)}
+                              >
+                                정지해제
+                              </button>
+                            ) : (
+                              <button
+                                type="button"
+                                className="text-xs font-medium text-amber-700 hover:text-amber-800 disabled:opacity-50"
+                                disabled={actionId === u.id}
+                                onClick={() => handleSuspendUser(u.id)}
+                              >
+                                정지
+                              </button>
+                            )}
                             <span className="text-slate-300">|</span>
                             <button
                               type="button"
