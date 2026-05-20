@@ -98,10 +98,13 @@ export default function VetReportMessages() {
     return (
       <div className="min-h-screen bg-slate-50 pb-12">
         <div className="bg-white border-b border-slate-200 px-4 py-4">
-          <button onClick={() => navigate('/vet/dashboard')}
-            className="flex items-center gap-1.5 text-sm font-semibold text-blue-600 mb-2">
-            <ChevronLeft className="w-4 h-4" /> 대시보드
-          </button>
+          <Link
+            to="/vet/dashboard"
+            className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-800 mb-2"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            대시보드
+          </Link>
           <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <Shield className="w-5 h-5 text-blue-600" />
             관리자 안내
