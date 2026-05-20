@@ -16,7 +16,9 @@ const STATUS_LABEL = {
 
 function formatTime(iso) {
   try {
-    return new Date(iso).toLocaleString('ko-KR');
+    const d = new Date(iso);
+    d.setHours(d.getHours() + 9);
+    return d.toLocaleString('ko-KR');
   } catch {
     return iso;
   }
@@ -96,6 +98,10 @@ export default function VetReportMessages() {
     return (
       <div className="min-h-screen bg-slate-50 pb-12">
         <div className="bg-white border-b border-slate-200 px-4 py-4">
+          <button onClick={() => navigate('/vet/dashboard')}
+            className="flex items-center gap-1.5 text-sm font-semibold text-blue-600 mb-2">
+            <ChevronLeft className="w-4 h-4" /> 대시보드
+          </button>
           <h1 className="text-lg font-bold text-slate-900 flex items-center gap-2">
             <Shield className="w-5 h-5 text-blue-600" />
             관리자 안내
@@ -150,11 +156,10 @@ export default function VetReportMessages() {
           {thread.map((m) => (
             <div
               key={m.id}
-              className={`rounded-xl p-3 text-sm ${
-                m.sender_role === 'vet'
-                  ? 'bg-blue-50 border border-blue-100 ml-8'
-                  : 'bg-white border border-slate-200 mr-8'
-              }`}
+              className={`rounded-xl p-3 text-sm ${m.sender_role === 'vet'
+                ? 'bg-blue-50 border border-blue-100 ml-8'
+                : 'bg-white border border-slate-200 mr-8'
+                }`}
             >
               <div className="flex justify-between text-xs text-slate-500 mb-1">
                 <span>{senderLabel(m.sender_role)}</span>

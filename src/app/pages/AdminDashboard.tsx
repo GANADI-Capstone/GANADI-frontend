@@ -596,17 +596,6 @@ export function AdminDashboard() {
                   ? "수의사 관리"
                   : "신고 관리"}
           </h1>
-          <button
-            type="button"
-            className="relative rounded-lg p-2 text-slate-500 hover:bg-slate-100"
-            aria-label="알림"
-            onClick={() => navigate("/notifications")}
-          >
-            <Bell className="h-4 w-4" />
-            {(stats?.open_reports_count ?? 0) > 0 && (
-              <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-red-500" />
-            )}
-          </button>
         </header>
 
         <div className="space-y-5 p-6">
