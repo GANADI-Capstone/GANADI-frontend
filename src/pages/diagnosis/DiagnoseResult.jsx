@@ -426,7 +426,7 @@ function InAppReport({ data, onClose, onDownloadPDF, pdfBusy, pdfError }) {
             ) : (
               <>
                 <FileText className="h-4 w-4" />
-                PDF로 저장 / 공유
+                PDF로 저장
               </>
             )}
           </button>
