@@ -47,8 +47,9 @@ export function OpinionDetail() {
     try {
       setIsPdfLoading(true);
       await downloadOpinionPDF(opinion.id);
-    } catch {
-      alert("PDF 다운로드에 실패했습니다.");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "PDF 다운로드에 실패했습니다.";
+      alert(`PDF 다운로드 실패: ${msg}`);
     } finally {
       setIsPdfLoading(false);
     }
