@@ -78,6 +78,23 @@ export default function DiagnoseResult() {
     }
   };
 
+  const {
+    predictions,
+    main_disease,
+    main_confidence,
+    is_normal,
+    image_url,
+    heatmap_url,
+    created_at,
+    pet_name,
+  } = currentDiagnosis || {};
+
+  const screening = useMemo(
+    () => getScreeningSummary({ is_normal, main_disease, main_confidence, predictions }),
+    [is_normal, main_disease, main_confidence, predictions]
+  );
+  const top3 = useMemo(() => getTopSuspicions(predictions, 3), [predictions]);
+
   if (loading && !currentDiagnosis) {
     return (
       <div className="flex min-h-[40vh] items-center justify-center px-4">
@@ -101,23 +118,6 @@ export default function DiagnoseResult() {
       </div>
     );
   }
-
-  const {
-    predictions,
-    main_disease,
-    main_confidence,
-    is_normal,
-    image_url,
-    heatmap_url,
-    created_at,
-    pet_name,
-  } = currentDiagnosis;
-
-  const screening = useMemo(
-    () => getScreeningSummary({ is_normal, main_disease, main_confidence, predictions }),
-    [is_normal, main_disease, main_confidence, predictions]
-  );
-  const top3 = useMemo(() => getTopSuspicions(predictions, 3), [predictions]);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
