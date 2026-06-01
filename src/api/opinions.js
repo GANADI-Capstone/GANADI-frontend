@@ -52,16 +52,40 @@ export const updateVetOpinion = async (opinionId, data) => {
 // 소견서 PDF 다운로드
 export const downloadOpinionPDF = async (opinionId) => {
   if (needsDirectPdfNavigation()) {
-    openPdfViaDirectUrl(`/vet-opinions/${opinionId}/pdf`);
+    openPdfViaDirectUrl(`/opinions/${opinionId}/pdf`);
     return;
   }
 
-  const response = await apiClient.get(`/vet-opinions/${opinionId}/pdf`, {
-    responseType: 'blob',
-    timeout: 60000,
-  });
+  try {
+    const response = await apiClient.get(`/opinions/${opinionId}/pdf`, {
+      responseType: 'blob',
+      timeout: 120000,
+    });
 
-  savePdfBlob(response.data, `소견서_${opinionId}.pdf`);
+    savePdfBlob(response.data, `소견서.pdf`);
+  } catch (error) {
+    const data = error.response?.data;
+    if (data instanceof Blob) {
+      const text = await data.text();
+      try {
+        const parsed = JSON.parse(text);
+        const detail = parsed?.detail;
+        const msg =
+          typeof detail === 'string'
+            ? detail
+            : Array.isArray(detail)
+              ? detail.map((d) => d.msg || JSON.stringify(d)).join(', ')
+              : text || 'PDF 다운로드에 실패했습니다.';
+        throw new Error(msg);
+      } catch (parseErr) {
+        if (parseErr instanceof SyntaxError) {
+          throw new Error(text.slice(0, 200) || 'PDF 다운로드에 실패했습니다.');
+        }
+        throw parseErr;
+      }
+    }
+    throw error;
+  }
 };
 
 // 리뷰 작성 (평점·리뷰)
